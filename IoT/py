@@ -1,0 +1,65 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+def generate_square_wave(T, cycles, amplitude):
+    t = np.linspace(0, T * cycles, int(1000 * cycles))
+    square_wave = amplitude * np.sign(np.sin(2 * np.pi / T * t))
+    return t, square_wave
+
+def generate_triangle_wave(T, cycles, amplitude):
+    t = np.linspace(0, T * cycles, int(1000 * cycles))
+    triangle_wave = amplitude * (2 / T * (t % T) - 1)
+    return t, triangle_wave
+
+def generate_sawtooth_wave(T, cycles, amplitude):
+    t = np.linspace(0, T * cycles, int(1000 * cycles))
+    sawtooth_wave = amplitude * (2 / T * (t % T) - 1)
+    return t, sawtooth_wave
+
+def fourier_series(t, waveform, n):
+    result = np.zeros_like(t)
+    for i in range(1, n + 1):
+        k = 2 * i - 1
+        term = (4 / (np.pi * k)) * np.sin(2 * np.pi * k * t / T)
+        result += term
+    return waveform - result
+
+T = 0.01  # Time period
+cycles = 5  # Number of cycles
+amplitude = 1.0  # Amplitude
+
+# Generating Square Waveform
+t_square, square_wave = generate_square_wave(T, cycles, amplitude)
+plt.figure()
+plt.plot(t_square, square_wave, label='Original Square Waveform')
+for n in [5, 10, 15]:
+    reconstructed_square = fourier_series(t_square, square_wave, n)
+    plt.plot(t_square, reconstructed_square, label=f'Reconstructed (n={n})')
+
+plt.title('Square Waveform and Fourier Series Reconstruction')
+plt.legend()
+plt.show()
+
+# Generating Triangle Waveform
+t_triangle, triangle_wave = generate_triangle_wave(T, cycles, amplitude)
+plt.figure()
+plt.plot(t_triangle, triangle_wave, label='Original Triangle Waveform')
+for n in [5, 10, 15]:
+    reconstructed_triangle = fourier_series(t_triangle, triangle_wave, n)
+    plt.plot(t_triangle, reconstructed_triangle, label=f'Reconstructed (n={n})')
+
+plt.title('Triangle Waveform and Fourier Series Reconstruction')
+plt.legend()
+plt.show()
+
+# Generating Sawtooth Waveform
+t_sawtooth, sawtooth_wave = generate_sawtooth_wave(T, cycles, amplitude)
+plt.figure()
+plt.plot(t_sawtooth, sawtooth_wave, label='Original Sawtooth Waveform')
+for n in [5, 10, 15]:
+    reconstructed_sawtooth = fourier_series(t_sawtooth, sawtooth_wave, n)
+    plt.plot(t_sawtooth, reconstructed_sawtooth, label=f'Reconstructed (n={n})')
+
+plt.title('Sawtooth Waveform and Fourier Series Reconstruction')
+plt.legend()
+plt.show()
